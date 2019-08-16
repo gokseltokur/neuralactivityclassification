@@ -60,7 +60,7 @@ def traindatalabel():
         '''
         for a in content:
             train_images.append([a, onehotlabel(i)])
-    random.shuffle(train_images)
+    #random.shuffle(train_images)
     return train_images
 
 def testdatalabel():
@@ -138,17 +138,20 @@ def train():
     optimizer = Adam(lr=1e-3)
     model.compile(loss = 'categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
     model.summary()
-    checkpointer = ModelCheckpoint(filepath = 'MLP.weights.best.hdf5', verbose = 1, save_best_only = True)
-    model.fit(train_images, train_labels, epochs = 10, batch_size=256, validation_split = 0.1, callbacks = [checkpointer], verbose = 2, shuffle = True)
+    #checkpointer = ModelCheckpoint(filepath = 'MLP.weights.best.hdf5', verbose = 1, save_best_only = True)
+    #model.fit(x=train_images, y=train_labels, epochs = 10, batch_size=256, validation_split = 0.1, callbacks = [checkpointer], verbose = 2)
+    model.fit(x=train_images, y=train_labels, epochs = 10, batch_size=256)
 
     print(x_test)
     print('qqqqqqqqqqqqqqqqqqqqqqqq')
     print(y_test)
-    loss, accuracy = model.evaluate(x_test, y_test, verbose=1)
+    #loss, accuracy = model.evaluate(test_images, test_labels, verbose=1)
+    loss, accuracy = model.evaluate(test_images, test_labels)
     print('Test accuracy: ', accuracy)
     print('Test loss: ', loss)
     print('qqqqqqqqqqqqqqqqqqqqqqqq')
     print(x_test[0])
+    print(y_test[0])
     asd = np.asarray(np.reshape(x_test[0], (1,14)))
     print(asd)
     predict = model.predict(asd)
