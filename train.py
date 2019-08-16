@@ -27,9 +27,9 @@ test_data = 'testdata'
 
 def onehotlabel(csv):
     label = csv.split('.')[0]
-    if label == 'bag':
+    if label == 'closed':
         ohl = np.array([1,0,0,0])
-    elif label == 'image':
+    elif label == 'opened':
         ohl = np.array([0,1,0,0])
     elif label == 'text':
         ohl = np.array([0,0,1,0])
@@ -74,6 +74,8 @@ def testdatalabel():
         np.array(content, dtype='float32')
         content = content.values
         content = np.delete(content, [0,1,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], 1)
+        print("\n")
+        print(path)
         
         for a in content:
             test_images.append([a, onehotlabel(i)])
@@ -91,7 +93,7 @@ def createModel(train_images):
     model.add(Dropout(0.2))
     model.add(Dense(1000, activation = 'relu'))
     model.add(Dropout(0.2))
-    model.add(Dense(4, activation = 'sigmoid'))
+    model.add(Dense(4, activation = 'softmax'))
 
 
     return model
@@ -128,7 +130,7 @@ def train():
     test_labels = np.array([i[1] for i in testimages])
     """
     
-    class_names = ['bag', 'image', 'text', 'cart']
+    class_names = ['closed', 'opened', 'text', 'cart']
     num_classes = len(class_names)
 
     model = createModel(train_images)
