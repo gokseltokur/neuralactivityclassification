@@ -81,13 +81,13 @@ def testdatalabel():
             test_images.append([a, onehotlabel(i)])
     return test_images
 
-def createModel(train_images):
+def createModel():
     model = Sequential()
     '''
     model.add(Dense(512, activation = 'relu', input_shape = (train_images.shape[1], ))) ####### 14 yerine x.shape[1] OLABILIR DIKKAT ET
     model.add(Dense(4, activation = 'sigmoid'))
     '''
-    model.add(Dense(1000, activation = 'relu', input_shape = (train_images.shape[1], )))
+    model.add(Dense(1000, activation = 'relu', input_shape = (14, )))
     model.add(Dropout(0.2))
     model.add(Dense(1000, activation = 'relu'))
     model.add(Dropout(0.2))
@@ -112,6 +112,7 @@ def train():
     (x_train, x_test) = train_images[:1100], test_images[1100:]
     (y_train, y_test) = train_labels[:1100], test_labels[1100:]
 
+    
 
     print('\n\nasd')
     print(test_images)
@@ -133,7 +134,7 @@ def train():
     class_names = ['closed', 'opened', 'text', 'cart']
     num_classes = len(class_names)
 
-    model = createModel(train_images)
+    model = createModel()
      # loss eeg de binary_crossentropy ??? rectclassifier da categorical_crossentropy
     optimizer = Adam(lr=1e-3)
     model.compile(loss = 'categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
@@ -149,6 +150,13 @@ def train():
     loss, accuracy = model.evaluate(test_images, test_labels)
     print('Test accuracy: ', accuracy)
     print('Test loss: ', loss)
+
+    # 
+    modelpath = 'model/gkslmodel.hdf5'
+    model.save(modelpath)
+    #
+
+
     print('qqqqqqqqqqqqqqqqqqqqqqqq')
     print(x_test[0])
     print(y_test[0])
