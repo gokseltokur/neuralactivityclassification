@@ -36,12 +36,14 @@ def testim():
         content = content.values
         content = np.delete(content, [0,1,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], 1)
 
+        content = content/10000
+
         for a in content:
             test_images.append([a])
     return test_images
 
 
-modelpath = 'model/gkslmodel.hdf5'
+modelpath = 'MLP.weights.best.hdf5'
 testimages = testim()
 
 model = tr.createModel()
@@ -50,7 +52,6 @@ model.load_weights(modelpath)
 
 
 test_images = np.array([i[0] for i in testimages])
-
 
 def predictimg():
     for i in range(len(test_images)):

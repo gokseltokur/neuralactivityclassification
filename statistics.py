@@ -5,6 +5,16 @@ import pandas as pd
 import scipy
 import scipy.stats
 
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn import metrics
+
+from sklearn.preprocessing import MinMaxScaler
+
+from keras.models import Sequential
+from keras.layers import Dense, Dropout
+from keras.callbacks import ModelCheckpoint
+
 def column(matrix, i):
     return [row[i] for row in matrix]
 
@@ -47,3 +57,20 @@ for i in tqdm(os.listdir(train_data)):
     print('\nStandard Deviation')
     print(df.std())
     print('\n\n\n')
+
+print(content)
+scaler = MinMaxScaler()
+scaler.fit(content)
+print('scaler')
+print(content)
+mean = content.mean()
+std = content.std()
+content = (content - mean)/std
+print('normal')
+print(content)
+(x_train, x_test) = content[:11000], content[11000:]
+
+print('xtrain')
+print(x_train)
+print('xtest')
+print(x_test)

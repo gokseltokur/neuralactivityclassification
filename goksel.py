@@ -92,6 +92,13 @@ x = (x - data_mean)/data_std
 (x_train, x_test) = x[:11000], x[11000:]
 (y_train, y_test) = y[:11000], y[11000:]
 
+print('normal')
+print(x)
+print('xtrain')
+print(x_train)
+print('xtest')
+print(x_test)
+
 # Training on Neural Networks 
 # Creating Model
 model = Sequential()

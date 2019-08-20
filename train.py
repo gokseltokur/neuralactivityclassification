@@ -28,13 +28,9 @@ test_data = 'testdata'
 def onehotlabel(csv):
     label = csv.split('.')[0]
     if label == 'closed':
-        ohl = np.array([1,0,0,0])
+        ohl = np.array([1,0])
     elif label == 'opened':
-        ohl = np.array([0,1,0,0])
-    elif label == 'text':
-        ohl = np.array([0,0,1,0])
-    elif label == 'cart':
-        ohl = np.array([0,0,0,1])
+        ohl = np.array([0,1])
     return ohl
 
 def traindatalabel():
@@ -48,9 +44,9 @@ def traindatalabel():
         content = content.values
         content = np.delete(content, [0,1,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], 1)
 
-
-        #Normalization of Data
         '''
+        #Normalization of Data
+        
         scaler = MinMaxScaler()
         scaler.fit(content)
         content_new = scaler.transform(content)
@@ -58,6 +54,8 @@ def traindatalabel():
         dataStd = content.std()
         content = (content-dataMean)/dataStd
         '''
+        content = content/10000
+        
         for a in content:
             train_images.append([a, onehotlabel(i)])
     #random.shuffle(train_images)
@@ -76,6 +74,7 @@ def testdatalabel():
         content = np.delete(content, [0,1,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35], 1)
         print("\n")
         print(path)
+        content = content/10000
         
         for a in content:
             test_images.append([a, onehotlabel(i)])
@@ -93,7 +92,7 @@ def createModel():
     model.add(Dropout(0.2))
     model.add(Dense(1000, activation = 'relu'))
     model.add(Dropout(0.2))
-    model.add(Dense(4, activation = 'softmax'))
+    model.add(Dense(2, activation = 'sigmoid'))
 
 
     return model
@@ -109,8 +108,8 @@ def train():
     test_images = np.array([i[0] for i in testimages])
     test_labels = np.array([i[1] for i in testimages])
 
-    (x_train, x_test) = train_images[:1100], test_images[1100:]
-    (y_train, y_test) = train_labels[:1100], test_labels[1100:]
+    #(x_train, x_test) = train_images[:1100], test_images[1100:]
+    #(y_train, y_test) = train_labels[:1100], test_labels[1100:]
 
     
 
@@ -131,23 +130,21 @@ def train():
     test_labels = np.array([i[1] for i in testimages])
     """
     
-    class_names = ['closed', 'opened', 'text', 'cart']
+    class_names = ['closed', 'opened']
     num_classes = len(class_names)
 
     model = createModel()
      # loss eeg de binary_crossentropy ??? rectclassifier da categorical_crossentropy
     optimizer = Adam(lr=1e-3)
-    model.compile(loss = 'categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
+    model.compile(loss = 'binary_crossentropy', optimizer='adam', metrics=['accuracy'])
     model.summary()
-    #checkpointer = ModelCheckpoint(filepath = 'MLP.weights.best.hdf5', verbose = 1, save_best_only = True)
+    checkpointer = ModelCheckpoint(filepath = 'MLP.weights.best.hdf5', verbose = 1, save_best_only = True)
     #model.fit(x=train_images, y=train_labels, epochs = 10, batch_size=256, validation_split = 0.1, callbacks = [checkpointer], verbose = 2)
-    model.fit(x=train_images, y=train_labels, epochs = 10, batch_size=256)
+    model.fit(x=train_images, y=train_labels, epochs = 100, batch_size=256, validation_split = 0.1, callbacks = [checkpointer], verbose = 2)
 
-    print(x_test)
     print('qqqqqqqqqqqqqqqqqqqqqqqq')
-    print(y_test)
-    #loss, accuracy = model.evaluate(test_images, test_labels, verbose=1)
-    loss, accuracy = model.evaluate(test_images, test_labels)
+    loss, accuracy = model.evaluate(test_images, test_labels, verbose=1)
+    #loss, accuracy = model.evaluate(test_images, test_labels)
     print('Test accuracy: ', accuracy)
     print('Test loss: ', loss)
 
@@ -158,9 +155,11 @@ def train():
 
 
     print('qqqqqqqqqqqqqqqqqqqqqqqq')
-    print(x_test[0])
-    print(y_test[0])
-    asd = np.asarray(np.reshape(x_test[0], (1,14)))
+    print(test_images[0])
+    print(test_labels[0])
+    ii = [4396.922969,5474.871661,4427.692199,5139.487054,4381.538354,4296.922972,3989.743492,4430.256302,4450.256301,4748.717833,4195.897333,4059.999901,5767.692167,4508.717838]
+    asd = np.asarray(np.reshape(ii, (1,14)))
+    asd = asd/10000
     print(asd)
     predict = model.predict(asd)
 
