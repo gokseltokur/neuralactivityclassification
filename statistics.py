@@ -21,11 +21,10 @@ def column(matrix, i):
 train_data = 'traindata'
 test_data = 'testdata'
 
+# Load data to an array
 for i in tqdm(os.listdir(train_data)):
     path = os.path.join(train_data, i)
     path = os.path.join(train_data, i)
-    #img = cv2.imread(path, cv2.IMREAD_GRAYSCALE) # 
-    #img = cv2.resize(img, (64, 64))
     content = pd.read_csv(path,header=None, prefix='COLUMN', skiprows=1)
     np.array(content, dtype='float32')
     content = content.values
